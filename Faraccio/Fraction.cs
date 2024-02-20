@@ -273,7 +273,11 @@ namespace Fraccio
 
         #region Propietats
 
-        //public static Fraction operator !()
+        public static Fraction operator !(Fraction f)
+        {
+            int num = f.a_den, den = f.a_num;
+            return new Fraction(num, den, f.a_sign);
+        }
 
         #endregion
 
