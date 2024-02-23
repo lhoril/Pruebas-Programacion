@@ -269,7 +269,7 @@ namespace Fraccio
         }
         #endregion
 
-        #region Propietats
+        #region operators
 
         public static bool operator ==(Fraction f1, Fraction f2)
         {
