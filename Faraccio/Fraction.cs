@@ -267,16 +267,145 @@ namespace Fraccio
             numerator = Convert.ToInt32(num);
             return new Fraction(numerator, 0, sign);
         }
-
         #endregion
 
-
         #region Propietats
+
+        public static bool operator ==(Fraction f1, Fraction f2)
+        {
+            return f1 == f2;
+        }
+
+        public static bool operator !=(Fraction f1, Fraction f2)
+        {
+            return !(f1 == f2);
+        }
+
+        public static Fraction operator +(Fraction f1, Fraction f2)
+        {
+            int num1, num2, den, den2;
+            num1 = f1.a_num * f2.a_den;
+            num2 = f2.a_num * f1.a_den;
+            den = f1.a_den * f2.a_den;
+            den2 = den;
+            char sign = '+';
+            if (f1.a_sign == '+' && f2.a_sign == '+') num1 += num2;
+            else if (f1.a_sign == '+' && f2.a_sign == '-')
+            {
+                num1 = num1 - num2;
+                if (f2.a_num > f1.a_num)
+                {
+                    sign = '-';
+                }
+            }
+            else if (f1.a_sign == '-' && f2.a_sign == '-')
+            {
+                num1 = num1 - num2;
+                sign = '-';
+            }
+            else if (f1.a_sign == '-' && f2.a_sign == '+')
+            {
+                num1 = num1 - num2;
+                if (f1.a_num > f2.a_num)
+                {
+                    sign = '-';
+                }
+            }
+            return new Fraction(num1, den, sign);
+        }
+
+        public static Fraction operator -(Fraction f)
+        {
+            char sign = f.a_sign;
+            return new Fraction(f.a_num, f.a_den, sign = '-');
+        }
+
+        public static Fraction operator -(Fraction f1, Fraction f2)
+        {
+            int num1, num2, den, den2;
+            num1 = f1.a_num * f2.a_den;
+            num2 = f2.a_num * f1.a_den;
+            den = f1.a_den * f2.a_den;
+            den2 = den;
+            char sign = '+';
+            if (f1.a_sign == '+' && f2.a_sign == '-')
+            {
+                num1 = num1 - num2;
+                if (f2.a_num > f1.a_num)
+                {
+                    sign = '-';
+                }
+            }
+            else if (f1.a_sign == '-' && f2.a_sign == '-')
+            {
+                num1 = num1 - num2;
+                sign = '-';
+            }
+            else if (f1.a_sign == '-' && f2.a_sign == '+')
+            {
+                num1 = num1 - num2;
+                if (f1.a_num > f2.a_num)
+                {
+                    sign = '-';
+                }
+            }
+            else num1 = num1 + num2;
+            num2 = num1;
+            return new Fraction(num1, den, sign);
+        }
+
+        public static Fraction operator *(Fraction f1, Fraction f2)
+        {
+            int num1, den;
+            num1 = f1.a_num * f2.a_num;
+            den = f1.a_den * f2.a_den;
+            char sign = '+';
+            if (f1.a_sign == '-' && f2.a_sign == '+' && f1.a_sign == '+' && f2.a_sign == '-')
+            {
+                sign = '-';
+            }
+
+            return new Fraction(num1, den, sign);
+        }
 
         public static Fraction operator !(Fraction f)
         {
             int num = f.a_den, den = f.a_num;
             return new Fraction(num, den, f.a_sign);
+        }
+
+        public static Fraction operator ++(Fraction f)
+        {
+            return new Fraction(f.a_num + 1, f.a_den + 1, f.a_sign);
+        }
+
+        public static Fraction operator --(Fraction f)
+        {
+            return new Fraction(f.a_num - 1, f.a_den - 1, f.a_sign);
+        }
+
+        public static Fraction operator /(Fraction f1, Fraction f2)
+        {
+            int aux, aux2, num1 = f1.a_den, num2 = f2.a_num, den = f1.a_den, den2 = f2.a_den;
+            char sign = '+';
+            aux = num1;
+            num1 = den;
+            den = aux;
+
+            aux2 = num2;
+            num2 = den2;
+            den2 = aux2;
+
+            num1 = num1 * num2;
+            den = den * den2;
+
+            if (f1.a_sign == '-' && f2.a_sign == '+' && f1.a_sign == '+' && f2.a_sign == '-')
+            {
+                num1 = -num1;
+                den = -den;
+                sign = '-';
+            }
+            return new Fraction(num1, den, sign);
         }
 
         #endregion
