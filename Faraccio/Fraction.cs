@@ -98,15 +98,15 @@ namespace Fraccio
         {
             a_num = a_num / MCD(a_num, a_den);
             a_den = a_den / MCD(a_num, a_den);
-            
         }
 
         public void Add (Fraction f)
         {
+            int num2, den2;
             this.a_num = a_num * f.a_den;
-            f.a_num = f.a_num * this.a_den;
+            num2 = f.a_num * this.a_den;
             this.a_den = a_den * f.a_den;
-            f.a_den = this.a_den;
+            den2 = this.a_den;
             if (this.a_sign == '+' && f.a_sign == '+') a_num += f.a_num;
             else if (this.a_sign == '+' && f.a_sign == '-')
             {
@@ -129,7 +129,7 @@ namespace Fraccio
                     a_num = -a_num;
                 }
             }
-            f.a_num = a_num;
+            num2 = a_num;
             simplify();
         }
 
@@ -146,17 +146,17 @@ namespace Fraccio
 
         public void Divide(Fraction f)
         {
-            int aux, aux2;
+            int aux, aux2, num2, den2;
             aux = a_num;
             a_num = a_den;
             a_den = aux;
 
             aux2 = f.a_num;
-            f.a_num = f.a_den;
-            f.a_den = aux2;
+            num2= f.a_den;
+            den2 = aux2;
 
-            this.a_num *= f.a_num;
-            this.a_den *= f.a_den;
+            this.a_num *= num2;
+            this.a_den *= den2;
 
             if (this.a_sign == '-' && f.a_sign == '+' && this.a_sign == '+' && f.a_sign == '-')
             {
@@ -205,7 +205,7 @@ namespace Fraccio
             }
             else if (f1.a_sign == '-' && f2.a_sign == '+')
             {
-                num1 = num1 - num2;
+                num1 = num1 + num2;
                 if (f1.a_num > f2.a_num)
                 {
                     num1 = -num1;
@@ -327,19 +327,21 @@ namespace Fraccio
             num2 = f2.a_num * f1.a_den;
             den = f1.a_den * f2.a_den;
             den2 = den;
-            char sign = '+';
+            char sign = ' ';
+            if (f1.a_sign == '+' && f2.a_sign == '+') num1 = num1 - num2;
             if (f1.a_sign == '+' && f2.a_sign == '-')
             {
-                num1 = num1 - num2;
+                num1 = num1 + num2;
                 if (f2.a_num > f1.a_num)
                 {
-                    sign = '-';
+                    sign = '+';
                 }
             }
             else if (f1.a_sign == '-' && f2.a_sign == '-')
             {
                 num1 = num1 - num2;
-                sign = '-';
+                sign = '+';
+                if(f1.a_num > f2.a_num) sign = '-';
             }
             else if (f1.a_sign == '-' && f2.a_sign == '+')
             {
@@ -414,11 +416,25 @@ namespace Fraccio
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(this.Sign);
-            sb.Append(this.a_num + "/");
-            sb.Append(this.a_den);
-            return sb.ToString();
+            string output = "";
+
+            if (this.a_num%this.a_den == 0)
+            {
+                if (this.a_num == 0)
+                {
+                    output = "0";
+                }
+                else
+                {
+                    output = $"{this.a_sign}{this.a_num/this.a_den}";
+                }
+                
+            }
+            else
+            {
+                output = $"{this.a_sign}{this.a_num}/{this.a_den}";
+            }
+            return output;
         }
 
         public override bool Equals(object obj)
