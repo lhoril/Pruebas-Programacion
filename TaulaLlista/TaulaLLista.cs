@@ -84,20 +84,58 @@ namespace TaulaLlista
 
         public bool conté (object Elem)
         {
-            return Elem.Equals(this.dades);
+            bool isEqual = false;
+
+            for (int i = 0; i < this.dades.Length; i++) 
+            { 
+                if (Elem.Equals(this.dades[i]) == true)
+                {
+                    isEqual = true;
+                }
+            }
+            return isEqual;
         }
 
-        public int IndexDe(object target)
+        public int IndexDe(object Elem)
         {
             bool trobat = false;
             int i = 0;
             while (!trobat && i < nElements)
             {
-                trobat = object.Equals(dades[i], target);
+                trobat = object.Equals(dades[i], Elem);
                 if (!trobat) i++;
             }
             if (!trobat) i = -1;
             return i;
+        }
+
+        public int UltimIndexDe(object Elem)
+        {
+            bool trobat = false;
+            int i = 0;
+            while (!trobat && i < nElements)
+            {
+                trobat = object.Equals(dades[i], Elem);
+                if (!trobat) i++;
+            }
+            if (!trobat) i = -1;
+            else i+= 1;
+            return i;
+        }
+        
+        public void Inverteix()
+        {
+            object ob1, ob2;
+            for (int i = 0;i < nElements;i++)
+            {
+                for(int j = nElements;j > 0; j--)
+                {
+                    ob1 = this.dades[i];
+                    ob2 = this.dades[j];
+                    this.dades[i] = ob1;
+                    this.dades[j] = ob2;
+                }
+            }
         }
 
         public object EliminaA(int posicio)
@@ -117,19 +155,46 @@ namespace TaulaLlista
             }
         }
 
-        public bool Elimina(object element)
+        public void Elimina(object element)
         {
             bool trobat = false;
             int posicio = IndexDe(element);
-            if(posicio != -1)
+            if (posicio != -1)
             {
                 trobat = true;
             }
-            return trobat;
+            if (trobat == true) EliminaA(posicio);
+            else throw new IndexOutOfRangeException("Index fora de rang");
         }
 
+        public bool Equals(TaulaLLista t2)
+        {
+            bool isEqual = false;
+            int numElem = 0;
+            for(int i = 0; i < this.dades.Length; i++)
+            {
+                if (Equals(t2[i]) == true)
+                {
+                    numElem++;
+                }
+            }
 
+            if(numElem == Nelem)
+            {
+                isEqual = true;
+            }
+            else isEqual = false;
 
+            return isEqual;
+        }
+
+        public static object[] ToArray(TaulaLLista t1)
+        {
+            object[] t2;
+            t2 = new object[t1.dades.Length];
+            for (int i = 0; i < t1.nElements; i++) { t2[i] = t1.dades[i]; }
+            return t2;
+        }
         #endregion
 
         #region Propietats
@@ -158,6 +223,45 @@ namespace TaulaLlista
         {
             get { return this.nElements; }
         }
+
+        #endregion
+
+        #region Overrides
+
+        public override string ToString()
+        {
+            StringBuilder output = new StringBuilder();
+
+            output.Append("[");
+
+            for (int i = 0; i < this.Nelem; i++)
+            {
+                if(Nelem != i)
+                {
+                    output.Append($"{dades[i]}, ");
+                }
+                else output.Append(this.dades[i]);
+            }
+            output.Append(Nelem + "]");
+
+            return output.ToString();
+
+        }
+
+        public override bool Equals(object? obj)
+        {
+            bool areEqual = false;
+            for (int i = 0;i < this.dades.Length; i++)
+            {
+                if (dades[i] == obj)
+                {
+                    areEqual = true;
+                }
+            }
+           
+            return areEqual;
+        }
+        
         #endregion
     }
 }
