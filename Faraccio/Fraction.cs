@@ -17,7 +17,7 @@ namespace Fraccio
         public Fraction(int num, int den, char sign) 
         {
             if (num < 0) { throw new Exception ("NUMERATOR NO POT SER UN NUMERO NEGATIU"); }
-            if (den < 0 || den == null) { throw new Exception ("DENOMINATOR NO POT SER UN NULL NI UN NUMERO NEGATIU"); }
+            if (den <= 0 || den == null) { throw new Exception ("DENOMINATOR NO POT SER UN NULL NI UN NUMERO NEGATIU"); }
             if (sign != '+' && sign != '-') { throw new Exception("SIGN HA DE CONTENIR UN + O UN -"); }
             this.a_num = num;
             this.a_den = den;
@@ -26,34 +26,44 @@ namespace Fraccio
 
         public Fraction (Fraction f)
         {
-            f. a_num = this.a_num;
-            f.a_den = this.a_den;
-            f.a_sign = this.a_sign;
+            this.a_num = f.a_num;
+            this.a_den = f.a_den;
+            this.a_sign = f.a_sign;
         }
 
         public Fraction():this(0,1,'-')
         {
-           
+
         }
         #endregion
 
         #region propietats
         public int Numerator 
         { 
-            get { return a_num; }
-            set { a_num = value; }
+            get {
+                 return a_num; }
+            set {
+                if (value < 0) throw new Exception("No pot ser un numero negatiu");
+                a_num = value; 
+            }
         }
 
         public int Denominator
         {
             get { return a_den; }
-            set { a_den = value; }
+            set {
+                if (value <= 0) throw new Exception("No pot ser un denominator negatiu o igual 0");
+                a_den = value; 
+            }
         }
 
         public char Sign
         {
             get { return a_sign; }
-            set { a_sign = value; }
+            set {
+                if (value != '+' && value != '-') throw new Exception("Sign ha de ser + o -");
+                a_sign = value; 
+            }
         }
 
         public double RealValue
@@ -74,63 +84,76 @@ namespace Fraccio
 
         private int MCD(int a, int b)
         {
-            int Aux;
-            Aux = a % b;
-            a = b;
-            b = Aux;
-            while (Aux > 0)
+            //int Aux;
+            //Aux = a % b;
+            //a = b;
+            //b = Aux;
+            //while (Aux > 0)
+            //{
+            //    Aux = a % b;
+            //    if (Aux != 0)
+            //    {
+            //        a = b;
+            //        b = Aux;
+            //    }
+            //}
+            //return b;
+
+            int num = 0;
+            while (b > 0)
             {
-                Aux = a % b;
-                if (Aux != 0)
-                {
-                    a = b;
-                    b = Aux;
-                }
+                num = b;
+                b = a % b;
+                a = num;
             }
-            return b;
+            
+            return a;
+
         }
 
         #endregion
 
         #region Metodos i Instancias
 
-        public void simplify()
+        public void Simplify()
         {
-            a_num = a_num / MCD(a_num, a_den);
-            a_den = a_den / MCD(a_num, a_den);
-            
+            int num, den;
+            num = a_num / MCD(a_num, a_den);
+            den = a_den / MCD(a_num, a_den);
+            a_num = num;
+            a_den = den;
         }
 
         public void Add (Fraction f)
         {
+            int num2, den2;
             this.a_num = a_num * f.a_den;
-            f.a_num = f.a_num * this.a_den;
+            num2 = f.a_num * this.a_den;
             this.a_den = a_den * f.a_den;
-            f.a_den = this.a_den;
-            if (this.a_sign == '+' && f.a_sign == '+') a_num += f.a_num;
+            den2 = this.a_den;
+            if (this.a_sign == '+' && f.a_sign == '+') a_num += num2;
             else if (this.a_sign == '+' && f.a_sign == '-')
             {
-                a_num = a_num - f.a_num;
-                if (f.a_num > this.a_num)
+                a_num = a_num - num2;
+                if (num2 > this.a_num)
                 {
-                    a_num = -a_num;
+                    this.Sign = '-';
                 }
             }
             else if (this.a_sign == '-' && f.a_sign == '-')
             {
-                a_num = a_num - f.a_num;
-                a_num = - a_num;
+                a_num = a_num + num2;
             }
             else if (this.a_sign == '-' && f.a_sign == '+')
             {
-                a_num = a_num - f.a_num;
-                if (this.a_num > f.a_num)
+                a_num = a_num - num2;
+                if (this.a_num > num2)
                 {
                     a_num = -a_num;
                 }
             }
-            f.a_num = a_num;
-            simplify();
+            num2 = a_num;
+            Simplify();
         }
 
         public void Multiply(Fraction f)
@@ -141,29 +164,29 @@ namespace Fraccio
             {
                 a_num = -a_num;
             }
-            simplify();
+            Simplify();
         }
 
         public void Divide(Fraction f)
         {
-            int aux, aux2;
+            int aux, aux2, num2, den2;
             aux = a_num;
             a_num = a_den;
             a_den = aux;
 
             aux2 = f.a_num;
-            f.a_num = f.a_den;
-            f.a_den = aux2;
+            num2= f.a_den;
+            den2 = aux2;
 
-            this.a_num *= f.a_num;
-            this.a_den *= f.a_den;
+            this.a_num *= num2;
+            this.a_den *= den2;
 
             if (this.a_sign == '-' && f.a_sign == '+' && this.a_sign == '+' && f.a_sign == '-')
             {
                 a_num = -a_num;
                 a_den = -a_den;
             }
-            simplify();
+            Simplify();
         }
 
         #endregion
@@ -172,8 +195,8 @@ namespace Fraccio
         public static bool Equivalents(Fraction f1, Fraction f2)
         {
             bool equals = false;
-            f1.simplify();
-            f2.simplify();
+            f1.Simplify();
+            f2.Simplify();
             if (f1.a_num == f2.a_num && f1.a_den == f2.a_den)
             {
                 equals = true;
@@ -201,11 +224,11 @@ namespace Fraccio
             else if (f1.a_sign == '-' && f2.a_sign == '-')
             {
                 num1 = num1 - num2;
-                num1 = -num1;
+                num1 = num1;
             }
             else if (f1.a_sign == '-' && f2.a_sign == '+')
             {
-                num1 = num1 - num2;
+                num1 = num1 + num2;
                 if (f1.a_num > f2.a_num)
                 {
                     num1 = -num1;
@@ -255,17 +278,16 @@ namespace Fraccio
 
         #region Conversions
 
+
         public static implicit operator Fraction (int numerator)
         {
-            string num = numerator.ToString();
             char sign = '+';
-            for (int i = 0; i < num.Length; i++)
-            {
-                if (num[i] == 1) sign = num[i];
-                else num.Append(num[i]);
-            }
-            numerator = Convert.ToInt32(num);
-            return new Fraction(numerator, 0, sign);
+            return new Fraction(numerator, 1, sign);
+        }
+
+        public static explicit operator double(Fraction f)
+        {
+            return f.RealValue;
         }
         #endregion
 
@@ -327,19 +349,21 @@ namespace Fraccio
             num2 = f2.a_num * f1.a_den;
             den = f1.a_den * f2.a_den;
             den2 = den;
-            char sign = '+';
+            char sign = ' ';
+            if (f1.a_sign == '+' && f2.a_sign == '+') num1 = num1 - num2;
             if (f1.a_sign == '+' && f2.a_sign == '-')
             {
-                num1 = num1 - num2;
+                num1 = num1 + num2;
                 if (f2.a_num > f1.a_num)
                 {
-                    sign = '-';
+                    sign = '+';
                 }
             }
             else if (f1.a_sign == '-' && f2.a_sign == '-')
             {
                 num1 = num1 - num2;
-                sign = '-';
+                sign = '+';
+                if(f1.a_num > f2.a_num) sign = '-';
             }
             else if (f1.a_sign == '-' && f2.a_sign == '+')
             {
@@ -414,11 +438,25 @@ namespace Fraccio
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(this.Sign);
-            sb.Append(this.a_num + "/");
-            sb.Append(this.a_den);
-            return sb.ToString();
+            string output = "";
+
+            if (this.a_num%this.a_den == 0)
+            {
+                if (this.a_num == 0)
+                {
+                    output = "0";
+                }
+                else
+                {
+                    output = $"{this.a_sign}{this.a_num/this.a_den}";
+                }
+                
+            }
+            else
+            {
+                output = $"{this.a_sign}{this.a_num}/{this.a_den}";
+            }
+            return output;
         }
 
         public override bool Equals(object obj)
