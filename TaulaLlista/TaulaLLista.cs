@@ -56,14 +56,7 @@ namespace TaulaLlista
             foreach (object valor in elements) Afegeix(valor);
         }
 
-        public void Neteja()
-        {
-            for (int i = 0; i < nElements; i++)
-            {
-                this.dades[i] = default(object);
-            }
-            this.nElements = 0;
-        }
+
 
         public void Insereix(object valor, int posicio)
         {
@@ -78,6 +71,33 @@ namespace TaulaLlista
                 dades[i] = dades[i - 1];
                 dades[i-1] = aux;
             }
+        }
+
+        public void Neteja()
+        {
+            for (int i = 0; i < nElements; i++)
+            {
+                this.dades[i] = default(object);
+            }
+            this.nElements = 0;
+        }
+
+        public bool conté (object Elem)
+        {
+            return Elem.Equals(this.dades);
+        }
+
+        public int IndexDe(object target)
+        {
+            bool trobat = false;
+            int i = 0;
+            while (!trobat && i < nElements)
+            {
+                trobat = object.Equals(dades[i], target);
+                if (!trobat) i++;
+            }
+            if (!trobat) i = -1;
+            return i;
         }
 
         public object EliminaA(int posicio)
@@ -96,18 +116,7 @@ namespace TaulaLlista
                 return o;
             }
         }
-        public int IndexDe(object target)
-        {
-            bool trobat = false;
-            int i = 0;
-            while (!trobat && i<nElements)
-            {
-                trobat = object.Equals(dades[i], target);
-                if (!trobat) i++;
-            }
-            if (!trobat) i = -1;
-            return i;
-        }
+
         public bool Elimina(object element)
         {
             bool trobat = false;
@@ -118,6 +127,8 @@ namespace TaulaLlista
             }
             return trobat;
         }
+
+
 
         #endregion
 
